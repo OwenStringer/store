@@ -1,0 +1,127 @@
+.footer {
+  background-color: #333;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 50px 0;
+  flex-shrink: 0;
+  /* Prevent footer from shrinking when content overflows */
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.footer-section {
+  flex: 1;
+  margin: 0 20px;
+  text-align: center;
+}
+
+.footer-section h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.footer-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.footer-section p {
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.footer-socials {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-socials a {
+  display: inline-block;
+  margin-right: 10px;
+  color: #fff;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  padding: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.footer-socials a:hover {
+  transform: translateY(-5px);
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+.footer-section ul li a:hover {
+  transform: translateY(-5px);
+}
+
+.footer-section form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-section form input,
+.footer-section form textarea {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.footer-section form textarea {
+  height: 100px;
+}
+
+.footer-section form button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #fff;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.footer-section form button:hover {
+  background-color: #666;
+  color: #fff;
+}
+
+.footer-bottom {
+  background-color: #222;
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 5px;
+  margin-top: 20px;
+}
