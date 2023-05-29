@@ -106,6 +106,7 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 app.post('/cart', async (req, res) => {
     const lineItems = req.body.lineItems;
 
@@ -116,14 +117,15 @@ app.post('/cart', async (req, res) => {
             line_items: lineItems,
             mode: 'payment',
             success_url: 'https://snoozyzone.com/success', // Replace with your success URL
-            cancel_url: 'https://snoozyzone.com/cancel', // Replace with your cancel URL
+            cancel_url: 'https://snoozyzone.com/products', // Replace with your cancel URL
         }, {
+            // Pass the API key in the Authorization header
             stripeAccount: process.env.STRIPE_ACCOUNT_ID,
         });
 
         console.log('Stripe checkout session created:', session.id);
 
-        res.redirect(303, session.url);
+        res.status(200).json({ url: session.url }); // Send the Stripe checkout URL as a response
     } catch (error) {
         console.error('Failed to create checkout session:', error);
         res.status(500).json({ error: 'Failed to create checkout session' });
