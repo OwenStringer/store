@@ -88,6 +88,9 @@ app.post('/checkout', async (req, res) => {
             mode: 'payment',
             success_url: 'http://localhost:3000/', // Replace with your success URL
             cancel_url: 'http://localhost:3000/login', // Replace with your cancel URL
+        }, {
+            // Pass the API key in the Authorization header
+            stripeAccount: process.env.STRIPE_SECRET_KEY,
         });
 
         console.log('Stripe checkout session created:', session.id);
@@ -98,6 +101,7 @@ app.post('/checkout', async (req, res) => {
         res.status(500).json({ error: 'Failed to create checkout session' });
     }
 });
+
 
 app.post('/webhook', (req, res) => {
     const sig = req.headers['stripe-signature'];
