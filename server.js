@@ -1,12 +1,15 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000; // Use process.env.PORT if available, otherwise use port 3000
+const port = process.env.PORT || 5000; // Use process.env.PORT if available, otherwise use port 3000
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const cors = require('cors');
 
 require('dotenv').config();
+app.use(cors());
 
 // Middleware to parse incoming requests with JSON payloads
 app.use(express.json());
@@ -73,42 +76,28 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.post('/create-checkout-session', async (req, res) => {
-    const { lineItems, successUrl, cancelUrl } = req.body;
 
-    let url;
-    if (process.env.NODE_ENV === 'production') {
-        url = 'https://snoozyzone.com/create-checkout-session';
-    } else {
-        url = 'http://localhost:3000/create-checkout-session';
-    }
+app.post('/checkout', async (req, res) => {
+    const lineItems = req.body.lineItems;
 
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            lineItems,
-            successUrl,
-            cancelUrl,
-        })
-    });
+    try {
+        console.log('Creating Stripe checkout session...');
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: 'http://localhost:3000/', // Replace with your success URL
+            cancel_url: 'http://localhost:3000/login', // Replace with your cancel URL
+        });
 
-    const session = await response.json();
+        console.log('Stripe checkout session created:', session.id);
 
-    const stripe = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-
-    const result = await stripe.redirectToCheckout({
-        sessionId: session.id
-    });
-
-    if (result.error) {
-        console.error(result.error.message);
+        res.redirect(303, session.url);
+    } catch (error) {
+        console.error('Failed to create checkout session:', error);
+        res.status(500).json({ error: 'Failed to create checkout session' });
     }
 });
-
-
 
 app.post('/webhook', (req, res) => {
     const sig = req.headers['stripe-signature'];
