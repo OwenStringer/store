@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
+// Serve the static files from the build folder
+app.use(express.static('build'));
 
 require('dotenv').config();
 app.use(cors());
