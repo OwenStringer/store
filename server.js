@@ -49,6 +49,10 @@ const User = mongoose.model('User', userSchema);
 const Product = mongoose.model('Product', productSchema);
 const Order = mongoose.model('Order', orderSchema);
 // Routes
+app.get('/', (req, res) => {
+    res.send('Welcome to the homepage');
+});
+
 app.post('/register', async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -90,7 +94,7 @@ app.post('/checkout', async (req, res) => {
             cancel_url: 'http://localhost:3000/login', // Replace with your cancel URL
         }, {
             // Pass the API key in the Authorization header
-            stripeAccount: process.env.STRIPE_SECRET_KEY,
+            stripeAccount: process.env.STRIPE_ACCOUNT_ID,
         });
 
         console.log('Stripe checkout session created:', session.id);
