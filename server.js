@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 // Redirect the homepage to the index.html file in the build folder
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 require('dotenv').config();
 app.use(cors());
@@ -55,6 +55,13 @@ const orderSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Product = mongoose.model('Product', productSchema);
 const Order = mongoose.model('Order', orderSchema);
+
+// Enable CORS for all routes
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
 app.post('/register', async (req, res) => {
     try {
