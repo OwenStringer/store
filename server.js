@@ -7,9 +7,14 @@ const jwt = require('jsonwebtoken');
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const cors = require('cors');
-// Serve the static files from the build folder
-app.use(express.static('build'));
 
+// Serve the static files from the build folder
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Redirect the homepage to the index.html file in the build folder
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 require('dotenv').config();
 app.use(cors());
 
@@ -50,10 +55,6 @@ const orderSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Product = mongoose.model('Product', productSchema);
 const Order = mongoose.model('Order', orderSchema);
-// Routes
-app.get('/', (req, res) => {
-    res.send('Welcome to the homepage');
-});
 
 app.post('/register', async (req, res) => {
     try {
