@@ -20,11 +20,6 @@ app.use(cors());
 
 // Middleware to parse incoming requests with JSON payloads
 app.use(express.json());
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
 
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -98,8 +93,8 @@ app.post('/cart', async (req, res) => {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: 'https/snoozyzone.com/', // Replace with your success URL
-            cancel_url: 'https/snoozyzone.com/products', // Replace with your cancel URL
+            success_url: 'https://snoozyzone.com/', // Replace with your success URL
+            cancel_url: 'https://snoozyzone.com/products', // Replace with your cancel URL
         }, {
             // Pass the API key in the Authorization header
             stripeAccount: process.env.STRIPE_ACCOUNT_ID,
@@ -114,6 +109,7 @@ app.post('/cart', async (req, res) => {
     }
 });
 
+app.use(express.raw({ type: 'application/json' }));
 
 app.post('/webhook', (req, res) => {
     const sig = req.headers['stripe-signature'];
