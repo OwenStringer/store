@@ -89,7 +89,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-app.post('/checkout', async (req, res) => {
+app.post('/cart', async (req, res) => {
     const lineItems = req.body.lineItems;
 
     try {
@@ -98,8 +98,8 @@ app.post('/checkout', async (req, res) => {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: 'http://localhost:3000/', // Replace with your success URL
-            cancel_url: 'http://localhost:3000/login', // Replace with your cancel URL
+            success_url: 'https/snoozyzone.com/', // Replace with your success URL
+            cancel_url: 'https/snoozyzone.com/products', // Replace with your cancel URL
         }, {
             // Pass the API key in the Authorization header
             stripeAccount: process.env.STRIPE_ACCOUNT_ID,
