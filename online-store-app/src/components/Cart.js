@@ -6,6 +6,7 @@ import { CartContext } from '../contexts/CartContext';
 
 const Cart = () => {
   const { cart, setCart } = useContext(CartContext);
+  const [stripe, setStripe] = useState(null); // Stripe instance
 
   const calculateTotal = () => {
     let total = 0;
@@ -18,41 +19,58 @@ const Cart = () => {
   };
 
   const handleCheckout = async () => {
+    if (!stripe) return; // Check if Stripe instance is loaded
+
+    // Create an array of line items from the cart
     const lineItems = cart.map(item => ({
-      price: item.price,
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: item.name,
+          description: item.description,
+          images: [item.image],
+        },
+        unit_amount: item.price * 100, // Stripe requires price in cents
+      },
       quantity: item.quantity,
     }));
 
-
-    const stripeEndpoint = process.env.NODE_ENV === 'production'
-      ? 'https://snoozyzone.com/create-checkout-session'
-      : 'http://localhost:3000/create-checkout-session';
-
-    const response = await fetch(stripeEndpoint, {
+    // Create a Stripe checkout session
+    const response = await fetch('https://snoozyzone.com/checkout', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        lineItems,
-        successUrl: 'https://snoozyzone.com/success',
-        cancelUrl: 'https://snoozyzone.com/cancel',
-      })
+      body: JSON.stringify({ lineItems }),
     });
 
     const session = await response.json();
 
-    const stripe = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+    if (session && session.id) {
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
 
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id
-    });
-
-    if (result.error) {
-      console.error(result.error.message);
+      if (error) {
+        console.error(error);
+      }
+    } else {
+      console.error('Invalid session response:', session);
     }
   };
 
+
+
+  useEffect(() => {
+    // Load Stripe instance when the component mounts
+    // Load Stripe instance when the component mounts
+    const loadStripeInstance = async () => {
+      const stripeInstance = await loadStripe('pk_live_51MuqejBiBZ9iIPDEe73MV85u1ZakSpdXde8Z9TmXrR9e6yCiREuLEzJoldkjyK3tEBo4vtur2tMInFBN8DbRNvNy00dBDWUISH');
+      setStripe(stripeInstance);
+    };
+
+    loadStripeInstance();
+  }, []);
 
   useEffect(() => {
     // Update the cart items state with the items from localStorage
