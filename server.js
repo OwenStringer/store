@@ -116,7 +116,7 @@ app.post('/cart', async (req, res) => {
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: 'https://snoozyzone.com/success', // Replace with your success URL
+            success_url: 'https://snoozyzone.com/', // Replace with your success URL
             cancel_url: 'https://snoozyzone.com/products', // Replace with your cancel URL
         }, {
             // Pass the API key in the Authorization header
